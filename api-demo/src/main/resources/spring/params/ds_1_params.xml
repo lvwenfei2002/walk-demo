@@ -11,7 +11,13 @@
 		<!-- 加载TD_S_STATIC表。此表特殊，程序中有特殊处理 -->
 		<table key="TD_S_STATIC"/>
 		
-		<!-- 加载区域表 -->
+		<!-- 加载TD_M_STAFF全表。-->
+		<table key="TD_M_STAFF" primaryKey="STAFF_ID"/>
+		
+		<!-- 加载TD_M_DEPART全表。-->
+		<table key="TD_M_DEPART" primaryKey="DEPART_ID"/>
+
+		<!-- 加载TD_M_AREA全表。-->
 		<table key="TD_M_AREA" primaryKey="AREA_CODE" condition="VALIDFLAG = '0'"/>
 		
 	</StaticParams>
