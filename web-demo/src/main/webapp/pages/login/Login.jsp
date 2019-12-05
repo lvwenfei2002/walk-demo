@@ -4,7 +4,7 @@
 <head>
 <%@ include file="/pages/common/base/Head.jsp"%>
 <w:link href="/static/modules/login/css/login.css"/>
-<title${util:getContextProperty('app.title')}</title>
+<title>${util:getContextProperty('app.title')}</title>
 </head>
 <body>
 <div class="login-container">
