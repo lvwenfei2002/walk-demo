@@ -26,7 +26,7 @@ public class ApiUtil {
 
 	private static transient Logger log = Logger.getLogger(ApiUtil.class);
 
-	private static final String API_NAME = "出账流程";
+	private static final String API_NAME = "demo";
 
 	/**
 	 * 	通过接口获取详情
