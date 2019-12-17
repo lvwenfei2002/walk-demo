@@ -1,6 +1,6 @@
 ##Spring Cloud相关配置#####################################################
 #应用名称
-spring.application.name=obs-task
+spring.application.name=task-demo
 #环境设置
 spring.profiles.active=dev
 
