@@ -32,6 +32,9 @@ public class LoginController extends AppController {
 		String failureKeyAttribute = SpringContextHolder.getBean(FormAuthenticationFilter.class).getFailureKeyAttribute();
         model.addAttribute("error", AuthErrorUtil.getErrorInfo((AuthenticationException)subject.getSession().getAttribute(failureKeyAttribute)));
         subject.getSession().removeAttribute(failureKeyAttribute);
+        if (subject.isAuthenticated()) {
+        	subject.logout();
+        }
 		return new ModelAndView("login/Login");
 	}
 	
