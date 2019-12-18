@@ -1,7 +1,11 @@
 package com.asiainfo.walk.webdemo.mvc.controller.login;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.web.filter.authc.FormAuthenticationFilter;
+import org.apache.shiro.web.util.WebUtils;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +33,19 @@ public class LoginController extends AppController {
         model.addAttribute("error", AuthErrorUtil.getErrorInfo((AuthenticationException)subject.getSession().getAttribute(failureKeyAttribute)));
         subject.getSession().removeAttribute(failureKeyAttribute);
 		return new ModelAndView("login/Login");
+	}
+	
+	/**
+	 * 	登录判断
+	 * 
+	 * @return
+	 * @throws Exception 
+	 */
+	@RequestMapping(value = "/login/formlogin")
+	public void formlogin(HttpServletRequest request, HttpServletResponse response) throws Exception{
+		if (subject.isAuthenticated()) {
+			WebUtils.issueRedirect(request, response, "/main");
+		}
 	}
 	
 	/**
