@@ -1,6 +1,5 @@
 package com.asiainfo.walk.webdemo.mvc.controller.demo;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
