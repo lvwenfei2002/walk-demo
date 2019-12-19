@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -131,6 +132,9 @@ public class UserDemoController extends AppController {
 		//1、从excel中获取数据
 		String xml = "demo/SaleUserImport.xml";
 		IDataset dataset = ExcelParser.importExcel(xml, mRequest.getFile("fileInfo").getInputStream(), TdMUser.class)[0];
+		if(CollectionUtils.isEmpty(dataset)) {
+			return message.success("导入失败：导入文件记录数为空！");
+		}
 		
 		//2、分拣成功与失败记录
 		IDataset succset = new DatasetList();
@@ -146,7 +150,9 @@ public class UserDemoController extends AppController {
 		}
 		
 		//3、成功记录数导入到数据库
-		userDemoService.doImportUsers(succset);
+		if(succset.size() > 0) {
+			userDemoService.doImportUsers(succset);
+		}
 		
 		//4、失败记录数前台下载
 		if (errset.size() > 0) {
