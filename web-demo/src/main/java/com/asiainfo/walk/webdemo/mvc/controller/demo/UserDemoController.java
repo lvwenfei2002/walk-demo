@@ -1,17 +1,24 @@
 package com.asiainfo.walk.webdemo.mvc.controller.demo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.ibatis.reflection.MetaObject;
+import org.apache.ibatis.reflection.SystemMetaObject;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 import org.walkframework.base.system.annotation.DataImport;
 import org.walkframework.base.system.annotation.ValidXml;
+import org.walkframework.base.tools.excel.ExcelParser;
 import org.walkframework.data.bean.Pagination;
+import org.walkframework.data.util.DatasetList;
+import org.walkframework.data.util.IDataset;
 import org.walkframework.data.util.InParam;
 
 import com.asiainfo.walk.webdemo.mvc.controller.app.AppController;
@@ -96,18 +103,56 @@ public class UserDemoController extends AppController {
 
 	/**
 	 * 	导入用户
-	 * 
+	 * 	只要有一条校验失败则全部失败
 	 */
 	@RequestMapping(value = "importUsers")
 	@DataImport(fileName = "fileInfo", xml = "demo/SaleUserImport.xml", type = TdMUser.class)
 	public String importUsers(InParam<String, Object> inParam) {
 		try {
+			
 //			List<IData<String, Object>> userList = inParam.getFileList("fileInfo");
 			List<TdMUser> users = inParam.getFileList("fileInfo");
 			userDemoService.doImportUsers(users);
 		} catch (Exception e) {
 			return message.error("导入失败:" + e.getMessage(), e);
 		}
+		return message.success("导入成功！");
+	}
+	
+	/**
+	 * 	导入用户 
+	 * 	校验失败后可自己控制
+	 * 
+	 * @throws Exception 
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@RequestMapping(value = "importUsers2")
+	public String importUsers2(InParam<String, Object> inParam, MultipartHttpServletRequest mRequest) throws Exception {
+		//1、从excel中获取数据
+		String xml = "demo/SaleUserImport.xml";
+		IDataset dataset = ExcelParser.importExcel(xml, mRequest.getFile("fileInfo").getInputStream(), TdMUser.class)[0];
+		
+		//2、分拣成功与失败记录
+		IDataset succset = new DatasetList();
+		IDataset errset = new DatasetList();
+		for (Object data : dataset) {
+			MetaObject dataMeta = SystemMetaObject.forObject(data);
+			Boolean importResult = Boolean.parseBoolean(String.valueOf(dataMeta.getValue("_IMPORT_RESULT")));
+			if (importResult) {
+				succset.add(data);
+			} else {
+				errset.add(data);
+			}
+		}
+		
+		//3、成功记录数导入到数据库
+		userDemoService.doImportUsers(succset);
+		
+		//4、失败记录数前台下载
+		if (errset.size() > 0) {
+			ExcelParser.error(errset, xml);
+		}
+		
 		return message.success("导入成功！");
 	}
 
