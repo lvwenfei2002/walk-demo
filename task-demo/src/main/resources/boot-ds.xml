@@ -33,7 +33,7 @@
 		minimumIdle：连接池中允许的最小连接数
 	-->	   
 	
-	<Resource name="ds_obilling" auth="Container" type="javax.sql.DataSource"
+	<Resource name="ds_walkdemo" auth="Container" type="javax.sql.DataSource"
 		   driverClassName="com.mysql.jdbc.Driver"
 		   jdbcUrl="jdbc:mysql://127.0.0.1:3306/walkdemodb?useUnicode=true&amp;characterEncoding=utf-8"
 		   username="walkdemo"
