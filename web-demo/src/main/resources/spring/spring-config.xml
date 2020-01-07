@@ -22,6 +22,9 @@
 	<context:component-scan base-package="com.asiainfo.walk.**.system.security" />
 	<context:component-scan base-package="com.asiainfo.walk.**.system.task" />
 	
+	<!-- 用于持有ApplicationContext,可以使用SpringContextHolder.getBean('xxxx')的静态方法得到spring bean对象 -->  
+    <bean class="org.walkframework.base.tools.spring.SpringContextHolder" lazy-init="false" />
+	
     <!-- 引入缓存 -->
 	<beans:import resource="classpath:spring/cache/spring-${cache.cacheDriver}.xml"/>
 	
@@ -66,9 +69,6 @@
 	    <property name="defaultLocale" value="zh_CN"/>
 	</bean>
 		
-	<!-- 用于持有ApplicationContext,可以使用SpringContextHolder.getBean('xxxx')的静态方法得到spring bean对象 -->  
-    <bean class="org.walkframework.base.tools.spring.SpringContextHolder" lazy-init="false" />
-    
     <!-- 定时导出处理器监听 
 	<bean id="timingExportExcuteMessageListener" class="org.walkframework.base.system.task.export.TimingExportExcuteMessageListener">
 		<property name="queueManagerName" value="queueManager"/>

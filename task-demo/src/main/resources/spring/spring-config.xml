@@ -19,6 +19,9 @@
 	<context:component-scan base-package="com.asiainfo.walk.**.mvc.service" />
 	<context:component-scan base-package="com.asiainfo.walk.**.mvc.task" />
 	
+	<!-- 用于持有ApplicationContext,可以使用SpringContextHolder.getBean('xxxx')的静态方法得到spring bean对象 -->  
+    <bean class="org.walkframework.base.tools.spring.SpringContextHolder" lazy-init="false" />
+	
     <!-- 引入缓存 -->
 	<beans:import resource="classpath:spring/cache/spring-${cache.cacheDriver}.xml"/>
 	
@@ -56,7 +59,4 @@
 	    <property name="cookieMaxAge" value="-1"/>
 	    <property name="defaultLocale" value="zh_CN"/>
 	</bean>
-
-	<!-- 用于持有ApplicationContext,可以使用SpringContextHolder.getBean('xxxx')的静态方法得到spring bean对象 -->  
-    <bean class="org.walkframework.base.tools.spring.SpringContextHolder" lazy-init="false" />
 </beans>
