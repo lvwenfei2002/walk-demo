@@ -14,6 +14,8 @@ import org.walkframework.data.bean.PageData;
 import org.walkframework.restful.model.req.ReqInfo;
 import org.walkframework.restful.model.rsp.PaginationRsp;
 import org.walkframework.restful.model.rsp.RspInfo;
+import org.walkframework.shiro.util.password.DefaultPasswordEncryptor;
+import org.walkframework.shiro.util.password.PasswordEncryptor;
 
 import com.asiainfo.walk.apidemo.mvc.entity.TdMArea;
 import com.asiainfo.walk.apidemo.mvc.entity.TdMUser;
@@ -104,7 +106,9 @@ public class ApiDemoService extends AppService {
 		UserAuthenticationRsp rspInfo = new UserAuthenticationRsp();
 		rspInfo.setSuccessFlag("0");
 		
-		String enPassword = new Sha256Hash(reqInfo.getReqBody().getPassword()).toString();
+		//加密算法
+		PasswordEncryptor pe = new DefaultPasswordEncryptor();
+		String enPassword = pe.encrypt(reqInfo.getReqBody().getPassword());
 		
 		TdMUser user = dao.selectOne(new TdMUser(){{
 			setUserName(reqInfo.getReqBody().getUserName()).asCondition();
