@@ -1,11 +1,10 @@
-package com.asiainfo.walk.apidemo.tools;
+package com.asiainfo.walk.webdemo.tools;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,19 +16,17 @@ import org.walkframework.batis.tools.dbtobean.CreateBeans;
 import org.walkframework.data.util.IData;
 
 /**
- * 根据数据库表生成接口文档
+ * 根据数据库表生成easyui datagrid
  * 
  */
-public abstract class DbToInterfaceDoc {
-	
-	private static final String SEPARATOR = "	";
+public abstract class DbToGrid {
 	
 	public static void main(String[] args) throws Exception {
 
 		// 打印表信息
 		printFieldInfo("TD_M_USER");
 	}
-
+	
 	/**
 	 * 数据源设置
 	 * 
@@ -62,15 +59,10 @@ public abstract class DbToInterfaceDoc {
 			Map<String, String> columnsMap = getComments(connection, tableName);
 			pre = connection.prepareStatement(sql);
 			ResultSetMetaData metaData = pre.executeQuery().getMetaData();
-
 			for (int i = 1; i <= metaData.getColumnCount(); i++) {
-
 				String field = getJavaField(metaData.getColumnName(i).toUpperCase());
-				String type = getJavaType(metaData.getColumnType(i), metaData.getColumnType(i) == 2 ? metaData.getPrecision(i) : metaData.getColumnDisplaySize(i));
-				String len = getLen(metaData.getColumnType(i), metaData.getColumnType(i) == 2 ? metaData.getPrecision(i) : metaData.getColumnDisplaySize(i));
 				String comment = StringUtils.trim(StringUtils.replaceAll(columnsMap.get(metaData.getColumnName(i).toUpperCase()), "(\r\n|\r|\n|\n\r|\")", ""));
-				int nullable = metaData.isNullable(i);
-				System.out.println(field + SEPARATOR + "reqBody" + SEPARATOR + (nullable == 0 ? "1" : "?") + SEPARATOR + type + SEPARATOR + len + SEPARATOR + (comment==null?SEPARATOR:comment));
+				System.out.println(String.format("<th data-options=\"field:'%s',width:150\">%s</th>", field, comment));
 			}
 		} catch (Exception e) {
 			throw e;
@@ -117,100 +109,5 @@ public abstract class DbToInterfaceDoc {
 		} catch (Exception e) {
 			throw new RuntimeException("Create the JavaBeans property name failed, possibly due to the incoming table name error.\r" + e.getMessage());
 		}
-	}
-
-	private static String getJavaType(int columnType, int length) throws SQLException {
-		String javaType = "String";
-		switch (columnType) {
-		case Types.ARRAY:
-		case Types.DATALINK:
-		case Types.DISTINCT:
-		case Types.JAVA_OBJECT:
-		case Types.NULL:
-		case Types.OTHER:
-		case Types.REF:
-		case Types.STRUCT:
-		case Types.CHAR:
-		case Types.CLOB:
-		case Types.LONGNVARCHAR:
-		case Types.LONGVARCHAR:
-		case Types.NCHAR:
-		case Types.NCLOB:
-		case Types.NVARCHAR:
-		case Types.VARCHAR:
-		case Types.DATE:
-		case Types.TIME:
-		case Types.TIMESTAMP:
-		case Types.BINARY:
-		case Types.BLOB:
-		case Types.LONGVARBINARY:
-		case Types.VARBINARY:
-			javaType = "String";
-			break;
-		case Types.DOUBLE:
-		case Types.FLOAT:
-		case Types.BIT:
-		case Types.BIGINT:
-		case Types.INTEGER:
-		case Types.REAL:
-		case Types.SMALLINT:
-		case Types.TINYINT:
-		case Types.DECIMAL:
-		case Types.NUMERIC:
-			javaType = "Number";
-			break;
-
-		default:
-			break;
-		}
-		return javaType;
-	}
-
-	private static String getLen(int columnType, int length) {
-		String len = "V";
-		switch (columnType) {
-		case Types.CHAR:
-			len = "F" + length;
-			break;
-		case Types.ARRAY:
-		case Types.DATALINK:
-		case Types.DISTINCT:
-		case Types.JAVA_OBJECT:
-		case Types.NULL:
-		case Types.OTHER:
-		case Types.REF:
-		case Types.STRUCT:
-		case Types.CLOB:
-		case Types.LONGNVARCHAR:
-		case Types.LONGVARCHAR:
-		case Types.NCHAR:
-		case Types.NCLOB:
-		case Types.NVARCHAR:
-		case Types.VARCHAR:
-		case Types.BINARY:
-		case Types.BLOB:
-		case Types.LONGVARBINARY:
-		case Types.VARBINARY:
-		case Types.DOUBLE:
-		case Types.FLOAT:
-		case Types.BIT:
-		case Types.BIGINT:
-		case Types.INTEGER:
-		case Types.REAL:
-		case Types.SMALLINT:
-		case Types.TINYINT:
-		case Types.DECIMAL:
-		case Types.NUMERIC:
-			len = "V" + length;
-			break;
-		case Types.DATE:
-		case Types.TIME:
-		case Types.TIMESTAMP:
-			len = "F14";
-			break;
-		default:
-			break;
-		}
-		return len;
 	}
 }

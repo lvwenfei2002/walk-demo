@@ -1,7 +1,9 @@
 package com.asiainfo.walk.apidemo.tools;
 
+import org.walkframework.base.system.common.Common;
 import org.walkframework.batis.tools.dbtobean.CreateBeanConfig;
 import org.walkframework.batis.tools.dbtobean.CreateBeans;
+import org.walkframework.data.util.IData;
 
 /**
  * 根据数据库表生成实体类
@@ -9,12 +11,14 @@ import org.walkframework.batis.tools.dbtobean.CreateBeans;
  */
 public abstract class DbToEntity {
 	
-    public static void main(String[] args) throws Exception {
-    	CreateBeanConfig appConfig = new CreateBeanConfig();
-    	appConfig.setDriverClassName("com.mysql.jdbc.Driver");
-		appConfig.setDburl("jdbc:mysql://127.0.0.1:3306/walkdemodb?useUnicode=true&amp;characterEncoding=utf-8");
-		appConfig.setDbusername("walkdemo");
-		appConfig.setDbpassword("Walk@2018");
+    @SuppressWarnings("rawtypes")
+	public static void main(String[] args) throws Exception {
+    	IData resource = Common.getInstance().getProperties("boot-ds.xml", "Resource");
+		CreateBeanConfig appConfig = new CreateBeanConfig();
+		appConfig.setDriverClassName(resource.getString("driverClassName"));
+		appConfig.setDburl(resource.getString("jdbcUrl"));
+		appConfig.setDbusername(resource.getString("username"));
+		appConfig.setDbpassword(resource.getString("password"));
 		
 		String packageName = "com.asiainfo.walk.apidemo.mvc.entity";
 		String packagePath = "D:\\Workspace\\github\\walk-demo\\api-demo\\src\\main\\java\\com\\asiainfo\\walk\\apidemo\\mvc\\entity";
